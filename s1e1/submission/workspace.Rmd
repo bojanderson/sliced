@@ -1,0 +1,47 @@
+---
+title: "Sliced S1E1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Data
+
+```{r}
+df <- read.csv(file = "s1e1/data/train.csv")
+```
+
+```{r}
+library(tidyverse)
+
+scrub_df <- df %>%
+  select(min_players, max_players, avg_time, min_time, max_time, geek_rating)
+
+```
+
+```{r}
+model <- lm(geek_rating ~ ., scrub_df)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+new_data <- read.csv(file = "s1e1/data/test.csv")
+
+new_df <- new_data %>%
+  select(min_players, max_players, avg_time, min_time, max_time)
+```
+
+```{r}
+x <- predict(model, new_df)
+
+y <- data.frame(game_id = new_data$game_id, geek_rating = x)
+
+write.csv(y, file = "s1e1/submission/attempt1.csv", row.names = F)
+```
+
+
